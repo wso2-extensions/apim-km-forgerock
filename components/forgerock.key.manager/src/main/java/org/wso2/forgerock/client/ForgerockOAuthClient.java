@@ -87,7 +87,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         introspectClient =
                 Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
                         .logger(new Slf4jLogger())
-                        .requestInterceptor(new BasicAuthRequestInterceptor("7a67e614-7fad-419e-be6d-3d01309c6ef7", "dW9jq-IoCpAQF8HQk2wmb0YqkYl7m4MpztzpSKVAY431A0iyIWHAg-JdAbM9jHT81RL7R9SQWbmUCRCo00Ersw"))
+                        .requestInterceptor(new BasicAuthRequestInterceptor(clientId, clientSecret))
                         .encoder(new FormEncoder()).target(IntrospectClient.class, introspectEndpoint);
     }
 
