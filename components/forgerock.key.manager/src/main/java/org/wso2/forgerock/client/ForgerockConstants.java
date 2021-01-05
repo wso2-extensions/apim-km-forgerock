@@ -1,6 +1,6 @@
 /*
 /*
- * Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -26,6 +26,9 @@ public class ForgerockConstants {
     public static final String HTTP_HEADER_CONTENT_TYPE = "Content-Type";
     public static final String APPLICATION_JSON = "application/json";
     public static final String AUTHORIZATION = "Authorization";
+    public static final String ACCESS_TOKEN = "accessToken";
+    public static final String CLIENT_ID = "client_id";
+    public static final String CLIENT_SECRET = "client_secret";
     public static final String AUTHENTICATION_BASIC = "Basic ";
     public static final String GRANT_TYPE = "grant_type";
     public static final String GRANT_TYPE_CLIENT_CREDENTIALS = "client_credentials";
@@ -33,8 +36,6 @@ public class ForgerockConstants {
     public static final String CLIENT_REDIRECT_URIS = "redirect_uris";
     public static final String CLIENT_GRANT_TYPES = "grant_types";
     public static final String CLIENT_NAME = "client_name";
-    public static final String CLIENT_ID = "client_id";
-    public static final String CLIENT_SECRET = "client_secret";
     public static final String CLIENT_TOKEN_ENDPOINT_AUTH_METHOD = "token_endpoint_auth_method";
     public static final String CLIENT_APPLICATION_TYPE = "application_type";
     public static final String CLIENT_ACCESS_TOKEN_LIFETIME = "access_token_lifetime";
@@ -61,9 +62,9 @@ public class ForgerockConstants {
     public static final String JWKS = "jwks";
     public static final String SCOPE = "scp";
     public static final String FORGEROCK_TYPE = "ForgeRock";
-    public static final String CID = "aud";
+    public static final String AUD = "aud";
     public static final String DEFAULT_CALLBACK = "https://localhost:9443";
-
+    public static final String KM_TYPE = "Forgerock";
     ForgerockConstants() {
     }
 }

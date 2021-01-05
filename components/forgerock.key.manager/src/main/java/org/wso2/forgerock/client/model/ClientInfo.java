@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -41,28 +41,10 @@ public class ClientInfo {
     private Long accessTokenLifeTime;
     @SerializedName("refresh_token_lifetime")
     private Long refreshTokenLifeTime;
-
-    public Long getAuthCodeLifeTime() {
-        return authCodeLifeTime;
-    }
-
-    public void setAuthCodeLifeTime(Long authCodeLifeTime) {
-        this.authCodeLifeTime = authCodeLifeTime;
-    }
-
     @SerializedName("authorization_code_lifetime")
     private Long authCodeLifeTime;
     @SerializedName("redirect_uris")
     private List<String> redirectUris = new ArrayList<>();
-
-    public List<String> getDefaultScopes() {
-        return defaultScopes;
-    }
-
-    public void setDefaultScopes(List<String> defaultScopes) {
-        this.defaultScopes = defaultScopes;
-    }
-
     @SerializedName("default_scopes")
     private List<String> defaultScopes = new ArrayList<>();
     @SerializedName("registration_client_uri")
@@ -78,11 +60,23 @@ public class ClientInfo {
     @SerializedName("grant_types")
     private List<String> grantTypes = new ArrayList<>();
 
+    public List<String> getDefaultScopes() {
+
+        return defaultScopes;
+    }
+
+    public void setDefaultScopes(List<String> defaultScopes) {
+
+        this.defaultScopes = defaultScopes;
+    }
+
     public List<String> getGrantTypes() {
+
         return grantTypes;
     }
 
     public void setGrantTypes(List<String> grantTypes) {
+
         this.grantTypes = grantTypes;
     }
 
@@ -152,34 +146,42 @@ public class ClientInfo {
     }
 
     public String getClientType() {
+
         return clientType;
     }
 
     public void setClientType(String clientType) {
+
         this.clientType = clientType;
     }
 
     public Long getAccessTokenLifeTime() {
+
         return accessTokenLifeTime;
     }
 
     public void setAccessTokenLifeTime(Long accessTokenLifeTime) {
+
         this.accessTokenLifeTime = accessTokenLifeTime;
     }
 
     public Long getRefreshTokenLifeTime() {
+
         return refreshTokenLifeTime;
     }
 
     public void setRefreshTokenLifeTime(Long refreshTokenLifeTime) {
+
         this.refreshTokenLifeTime = refreshTokenLifeTime;
     }
 
     public String getClientUri() {
+
         return clientUri;
     }
 
     public void setClientUri(String clientUri) {
+
         this.clientUri = clientUri;
     }
 
@@ -216,5 +218,15 @@ public class ClientInfo {
     public void setJwks(JWKS jwks) {
 
         this.jwks = jwks;
+    }
+
+    public Long getAuthCodeLifeTime() {
+
+        return authCodeLifeTime;
+    }
+
+    public void setAuthCodeLifeTime(Long authCodeLifeTime) {
+
+        this.authCodeLifeTime = authCodeLifeTime;
     }
 }

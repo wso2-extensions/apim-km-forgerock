@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) 2021, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  * WSO2 Inc. licenses this file to you under the Apache License,
  * Version 2.0 (the "License"); you may not use this file except
@@ -74,7 +74,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         this.configuration = keyManagerConfiguration;
         String clientRegistrationEndpoint =
                 (String) configuration.getParameter(APIConstants.KeyManager.CLIENT_REGISTRATION_ENDPOINT);
-        String accessToken = (String) configuration.getParameter("accessToken");
+        String accessToken = (String) configuration.getParameter(ForgerockConstants.ACCESS_TOKEN);
         forgeDCRClient =
                 Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
                         .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(accessToken))
@@ -743,6 +743,6 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
     @Override
     public String getType() {
 
-        return ForgerockConstants.FORGEROCK_TYPE;
+        return ForgerockConstants.KM_TYPE;
     }
 }
