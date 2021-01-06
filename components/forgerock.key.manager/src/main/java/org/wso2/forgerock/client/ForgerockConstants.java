@@ -40,7 +40,7 @@ public class ForgerockConstants {
     public static final String CLIENT_APPLICATION_TYPE = "application_type";
     public static final String CLIENT_ACCESS_TOKEN_LIFETIME = "access_token_lifetime";
     public static final String CLIENT_REFRESH_TOKEN_LIFETIME = "refresh_token_lifetime";
-    public static final String CLIENT_AUTH_CODE_LIFETIME = "auth_code_lifetime";
+    public static final String CLIENT_AUTH_CODE_LIFETIME = "authorization_code_lifetime";
     public static final String CLIENT_RESPONSE_TYPES = "response_types";
     public static final String CLIENT_URI = "client_uri";
     public static final String ACCESS_TOKEN_AUDIENCE = "aud";

@@ -450,8 +450,12 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         if (additionalProperties.containsKey(ForgerockConstants.CLIENT_URI)) {
             clientInfo.setClientUri((String) additionalProperties.get(ForgerockConstants.CLIENT_URI));
         }
-        if (additionalProperties.containsKey(ForgerockConstants.CLIENT_RESPONSE_TYPES)) {
-            clientInfo.setResponseTypes((List) additionalProperties.get(ForgerockConstants.CLIENT_RESPONSE_TYPES));
+
+        Object clientResponseTypes = additionalProperties.get(ForgerockConstants.CLIENT_RESPONSE_TYPES);
+        if (clientResponseTypes != null) {
+            if(clientResponseTypes instanceof List) {
+                clientInfo.setResponseTypes((List) additionalProperties.get(ForgerockConstants.CLIENT_RESPONSE_TYPES));
+            }
         }
         if (additionalProperties.containsKey(ForgerockConstants.CLIENT_TOKEN_ENDPOINT_AUTH_METHOD)) {
             clientInfo.setTokenEndpointAuthMethod(
@@ -468,16 +472,40 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
             clientInfo.setJwks(jwks);
         }
         if (additionalProperties.containsKey(ForgerockConstants.CLIENT_ACCESS_TOKEN_LIFETIME)) {
-            clientInfo.setAccessTokenLifeTime(Long.parseLong((String)
-                    additionalProperties.get(ForgerockConstants.CLIENT_ACCESS_TOKEN_LIFETIME)));
+            Object accessTokenLifeTime = additionalProperties.get(ForgerockConstants.CLIENT_ACCESS_TOKEN_LIFETIME);
+            // This is to handle a ui issue where the type of the object returned is different
+            // compared to creating and updating
+            if(accessTokenLifeTime instanceof Double) {
+                double accessTokenLT = (double) additionalProperties.get(ForgerockConstants.CLIENT_ACCESS_TOKEN_LIFETIME);
+                clientInfo.setAccessTokenLifeTime((long) accessTokenLT);
+            } else {
+                clientInfo.setAccessTokenLifeTime(Long.parseLong((String)
+                        additionalProperties.get(ForgerockConstants.CLIENT_ACCESS_TOKEN_LIFETIME)));
+            }
         }
         if (additionalProperties.containsKey(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME)) {
-            clientInfo.setRefreshTokenLifeTime(Long.parseLong((String)
-                    additionalProperties.get(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME)));
+            Object refreshTokenLifeTime = additionalProperties.get(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME);
+            // This is to handle a ui issue where the type of the object returned is different
+            // compared to creating and updating
+            if(refreshTokenLifeTime instanceof Double) {
+                double refreshTokenLT = (double) additionalProperties.get(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME);
+                clientInfo.setAccessTokenLifeTime((long) refreshTokenLT);
+            } else {
+                clientInfo.setAccessTokenLifeTime(Long.parseLong((String)
+                        additionalProperties.get(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME)));
+            }
         }
         if (additionalProperties.containsKey(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME)) {
-            clientInfo.setAuthCodeLifeTime(Long.parseLong((String)
-                    additionalProperties.get(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME)));
+            // This is to handle a ui issue where the type of the object returned is different
+            // compared to creating and updating
+            Object authCodeLifeTime = additionalProperties.get(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME);
+            if(authCodeLifeTime instanceof Double) {
+                double authCodeLT = (double) additionalProperties.get(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME);
+                clientInfo.setAuthCodeLifeTime((long) authCodeLT);
+            } else {
+                clientInfo.setAuthCodeLifeTime(Long.parseLong((String)
+                        additionalProperties.get(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME)));
+            }
         }
         return clientInfo;
     }
