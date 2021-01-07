@@ -489,9 +489,9 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
             // compared to creating and updating
             if(refreshTokenLifeTime instanceof Double) {
                 double refreshTokenLT = (double) additionalProperties.get(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME);
-                clientInfo.setAccessTokenLifeTime((long) refreshTokenLT);
+                clientInfo.setRefreshTokenLifeTime((long) refreshTokenLT);
             } else {
-                clientInfo.setAccessTokenLifeTime(Long.parseLong((String)
+                clientInfo.setRefreshTokenLifeTime(Long.parseLong((String)
                         additionalProperties.get(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME)));
             }
         }
