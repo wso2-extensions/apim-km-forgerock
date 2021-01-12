@@ -36,6 +36,7 @@ public class ForgerockConstants {
     public static final String CLIENT_REDIRECT_URIS = "redirect_uris";
     public static final String CLIENT_GRANT_TYPES = "grant_types";
     public static final String CLIENT_NAME = "client_name";
+    public static final String REGISTRATION_ACCESS_TOKEN = "registration_access_token";
     public static final String CLIENT_TOKEN_ENDPOINT_AUTH_METHOD = "token_endpoint_auth_method";
     public static final String CLIENT_APPLICATION_TYPE = "application_type";
     public static final String CLIENT_ACCESS_TOKEN_LIFETIME = "access_token_lifetime";
@@ -61,7 +62,7 @@ public class ForgerockConstants {
     public static final String REQUEST_OBJECT_SIGNING_ALGORITHM = "request_object_signing_alg";
     public static final String JWKS = "jwks";
     public static final String SCOPE = "scp";
-    public static final String FORGEROCK_TYPE = "ForgeRock";
+    public static final String APP_UNFO = "APP_INFO";
     public static final String AUD = "aud";
     public static final String DEFAULT_CALLBACK = "https://localhost:9443";
     public static final String KM_TYPE = "Forgerock";

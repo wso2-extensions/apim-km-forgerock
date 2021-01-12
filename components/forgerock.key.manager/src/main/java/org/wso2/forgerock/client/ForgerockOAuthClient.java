@@ -44,6 +44,7 @@ import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.user.core.UserCoreConstants;
 import org.wso2.carbon.user.core.util.UserCoreUtil;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+import org.wso2.forgerock.client.dao.ForgerockApiMgtDAO;
 import org.wso2.forgerock.client.model.*;
 import org.wso2.forgerock.client.model.ForgerockDCRClient;
 
@@ -61,7 +62,8 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
     private static final Log log = LogFactory.getLog(ForgerockOAuthClient.class);
     private ForgerockDCRClient forgeDCRClient;
     private IntrospectClient introspectClient;
-
+    ForgerockApiMgtDAO apiMgtDAO = ForgerockApiMgtDAO.getInstance();
+    String clientRegistrationEndpoint = null;
     /**
      * {@code APIManagerComponent} calls this method, passing KeyManagerConfiguration as a {@code String}.
      *
@@ -72,18 +74,12 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
     public void loadConfiguration(KeyManagerConfiguration keyManagerConfiguration) throws APIManagementException {
 
         this.configuration = keyManagerConfiguration;
-        String clientRegistrationEndpoint =
+        clientRegistrationEndpoint =
                 (String) configuration.getParameter(APIConstants.KeyManager.CLIENT_REGISTRATION_ENDPOINT);
-        String accessToken = (String) configuration.getParameter(ForgerockConstants.ACCESS_TOKEN);
-        forgeDCRClient =
-                Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
-                        .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(accessToken))
-                        .target(ForgerockDCRClient.class, clientRegistrationEndpoint);
         String introspectEndpoint =
                 (String) configuration.getParameter(APIConstants.KeyManager.INTROSPECTION_ENDPOINT);
         String clientId = (String) configuration.getParameter(ForgerockConstants.CLIENT_ID);
         String clientSecret = (String) configuration.getParameter(ForgerockConstants.CLIENT_SECRET);
-
         introspectClient =
                 Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
                         .logger(new Slf4jLogger())
@@ -99,11 +95,14 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
      */
     @Override
     public OAuthApplicationInfo createApplication(OAuthAppRequest oAuthAppRequest) throws APIManagementException {
-
+        String accessToken = getRegistrationAccessToken();
+        ForgerockDCRClient forgeDCRClient =
+                Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
+                        .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(accessToken))
+                        .target(ForgerockDCRClient.class, clientRegistrationEndpoint);
         OAuthApplicationInfo oAuthApplicationInfo = oAuthAppRequest.getOAuthApplicationInfo();
         ClientInfo clientInfo = createClientInfoFromOauthApplicationInfo(oAuthApplicationInfo);
         ClientInfo createdApplication = forgeDCRClient.createApplication(clientInfo);
-
         if (createdApplication != null) {
             oAuthApplicationInfo = createOAuthAppInfoFromResponse(createdApplication);
             return oAuthApplicationInfo;
@@ -125,6 +124,14 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         OAuthApplicationInfo oAuthApplicationInfo = oAuthAppRequest.getOAuthApplicationInfo();
         ClientInfo clientInfo = createClientInfoFromOauthApplicationInfo(oAuthApplicationInfo);
         String clientId = oAuthApplicationInfo.getClientId();
+        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration.getName());
+        OAuthApplicationInfo oauthRetrievedAppInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
+        String accessToken = (String)oauthRetrievedAppInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
+        ForgerockDCRClient forgeDCRClient =
+                Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
+                        .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(
+                        accessToken)).target(
+                        ForgerockDCRClient.class, clientRegistrationEndpoint);
         ClientInfo clientInfoFromForgerock = forgeDCRClient.getApplication(clientId);
         if (clientInfoFromForgerock != null &&
                 clientInfoFromForgerock.getApplicationType().equals(clientInfo.getApplicationType())) {
@@ -154,6 +161,14 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
      */
     @Override
     public void deleteApplication(String clientId) throws APIManagementException {
+        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration.getName());
+        OAuthApplicationInfo oAuthApplicationInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
+        String accessToken = (String)oAuthApplicationInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
+        ForgerockDCRClient forgeDCRClient =
+                Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
+                        .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(
+                        accessToken)).target(
+                        ForgerockDCRClient.class, clientRegistrationEndpoint);
         forgeDCRClient.deleteApplication(clientId);
     }
 
@@ -166,9 +181,45 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
      */
     @Override
     public OAuthApplicationInfo retrieveApplication(String clientId) throws APIManagementException {
-
+        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration.getName());
+        OAuthApplicationInfo oAuthApplicationInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
+        String accessToken = (String)oAuthApplicationInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
+        ForgerockDCRClient forgeDCRClient =
+                Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
+                        .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(
+                                accessToken)).target(
+                                        ForgerockDCRClient.class, clientRegistrationEndpoint);
         ClientInfo retrievedClientInfo = forgeDCRClient.getApplication(clientId);
         return createOAuthAppInfoFromResponse(retrievedClientInfo);
+    }
+
+    /**
+     * Gets new access token and returns it in an AccessTokenInfo object.
+     * @return AccessTokenInfo Info of the new token.
+     * @throws APIManagementException This is the custom exception class for API management.
+     */
+    public String getRegistrationAccessToken()
+            throws APIManagementException {
+
+        String clientId = (String) configuration.getParameter(ForgerockConstants.CLIENT_ID);
+        String clientSecret = (String) configuration.getParameter(ForgerockConstants.CLIENT_SECRET);
+        if (log.isDebugEnabled()) {
+            log.debug(String.format("Get new Registration access token from authorization server for the " +
+                            "Consumer Key %s", clientId));
+        }
+        List<NameValuePair> parameters = new ArrayList<NameValuePair>();
+        String grantType = ForgerockConstants.GRANT_TYPE_CLIENT_CREDENTIALS;
+        parameters.add(new BasicNameValuePair(ForgerockConstants.GRANT_TYPE, grantType));
+        String scopeString = "dynamic_client_registration am-introspect-all-tokens";
+
+        parameters.add(new BasicNameValuePair(ForgerockConstants.ACCESS_TOKEN_SCOPE,
+                     scopeString));
+
+        ForgeRockAccessTokenInfo accessTokenInfo = getAccessToken(clientId, clientSecret, parameters);
+        if (accessTokenInfo != null) {
+            return  accessTokenInfo.getAccessToken();
+        }
+        return null;
     }
 
     /**
@@ -522,6 +573,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         appInfo.setClientName(clientInfo.getClientName());
         appInfo.setClientId(clientInfo.getClientId());
         appInfo.setClientSecret(clientInfo.getClientSecret());
+        appInfo.addParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN, clientInfo.getRegistrationAccessToken());
         if (clientInfo.getRedirectUris() != null) {
             appInfo.setCallBackURL(String.join(",", clientInfo.getRedirectUris()));
         }

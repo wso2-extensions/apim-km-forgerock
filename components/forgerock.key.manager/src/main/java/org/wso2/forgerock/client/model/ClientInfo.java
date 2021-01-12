@@ -59,6 +59,18 @@ public class ClientInfo {
     private JWKS jwks;
     @SerializedName("grant_types")
     private List<String> grantTypes = new ArrayList<>();
+    @SerializedName("registration_access_token")
+    private String registrationAccessToken;
+
+    public String getRegistrationAccessToken() {
+
+        return registrationAccessToken;
+    }
+
+    public void setRegistrationAccessToken(String registrationAccessToken) {
+
+        this.registrationAccessToken = registrationAccessToken;
+    }
 
     public List<String> getDefaultScopes() {
 

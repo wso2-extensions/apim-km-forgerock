@@ -51,9 +51,6 @@ public class ForgerockConnectorConfiguration implements KeyManagerConnectorConfi
 
         List<ConfigurationDto> configurationDtoList = new ArrayList<>();
         configurationDtoList
-                .add(new ConfigurationDto(ForgerockConstants.ACCESS_TOKEN, "Registration AccessToken", "input",
-                        "Access Token Generated From Forgerock UI", "", true, true, Collections.emptyList(), false));
-        configurationDtoList
                 .add(new ConfigurationDto(ForgerockConstants.CLIENT_ID, "Client ID", "input", "Client ID of service Application", "",
                         true,
                         false, Collections.emptyList(), false));
@@ -78,15 +75,15 @@ public class ForgerockConnectorConfiguration implements KeyManagerConnectorConfi
                         false, Arrays.asList("code", "token", "id_token"), true));
         configurationDtoList
                 .add(new ConfigurationDto(ForgerockConstants.CLIENT_ACCESS_TOKEN_LIFETIME, "Access Token Lifetime",
-                        "input", "Life Time of the Access Token", "3600", false,
+                        "input", "Life Time of the Access Token", "0", false,
                         false, Collections.emptyList(), false));
         configurationDtoList
                 .add(new ConfigurationDto(ForgerockConstants.CLIENT_REFRESH_TOKEN_LIFETIME, "Refresh Token Lifetime",
-                        "input", "Life Time of the Refresh Token", "60", false,
+                        "input", "Life Time of the Refresh Token", "0", false,
                         false, Collections.emptyList(), false));
         configurationDtoList
                 .add(new ConfigurationDto(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME, "Authorization code Lifetime",
-                        "input", "Life Time of the Authorization code", "60", false,
+                        "input", "Life Time of the Authorization code", "0", false,
                         false, Collections.emptyList(), false));
         configurationDtoList
                 .add(new ConfigurationDto(ForgerockConstants.CLIENT_TOKEN_ENDPOINT_AUTH_METHOD,
