@@ -66,6 +66,7 @@ public class ForgerockConstants {
     public static final String AUD = "aud";
     public static final String DEFAULT_CALLBACK = "https://localhost:9443";
     public static final String KM_TYPE = "Forgerock";
+    public static final String UUID = "UUID";
     ForgerockConstants() {
     }
 }

@@ -124,7 +124,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         OAuthApplicationInfo oAuthApplicationInfo = oAuthAppRequest.getOAuthApplicationInfo();
         ClientInfo clientInfo = createClientInfoFromOauthApplicationInfo(oAuthApplicationInfo);
         String clientId = oAuthApplicationInfo.getClientId();
-        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration.getName());
+        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration);
         OAuthApplicationInfo oauthRetrievedAppInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
         String accessToken = (String)oauthRetrievedAppInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
         ForgerockDCRClient forgeDCRClient =
@@ -161,7 +161,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
      */
     @Override
     public void deleteApplication(String clientId) throws APIManagementException {
-        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration.getName());
+        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration);
         OAuthApplicationInfo oAuthApplicationInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
         String accessToken = (String)oAuthApplicationInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
         ForgerockDCRClient forgeDCRClient =
@@ -181,7 +181,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
      */
     @Override
     public OAuthApplicationInfo retrieveApplication(String clientId) throws APIManagementException {
-        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration.getName());
+        String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration);
         OAuthApplicationInfo oAuthApplicationInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
         String accessToken = (String)oAuthApplicationInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
         ForgerockDCRClient forgeDCRClient =
