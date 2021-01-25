@@ -22,6 +22,11 @@ public class ForgerockApiMgtDAO {
 
     private static ForgerockApiMgtDAO INSTANCE = new ForgerockApiMgtDAO();
     private static final Log log = LogFactory.getLog(ForgerockApiMgtDAO.class);
+    private static String GET_KEY_MAPPING_INFO_FROM_CLIENT_ID = "SELECT APP_INFO FROM AM_APPLICATION_KEY_MAPPING " +
+            "WHERE CONSUMER_KEY = ? and KEY_MANAGER = ?";
+    private static String GET_APPINFO_FROM_UUID_OF_KEY_MANAGER = "SELECT APP_INFO FROM AM_APPLICATION_KEY_MAPPING " +
+            "WHERE CONSUMER_KEY = ? and KEY_MANAGER = (SELECT UUID FROM AM_KEY_MANAGER WHERE NAME = ? AND " +
+            "TENANT_DOMAIN = ?)";
 
     /**
      * Method to get the instance of the ApiMgtDAO.
@@ -45,52 +50,47 @@ public class ForgerockApiMgtDAO {
      */
     public String getAppInfoFromClientId(String clientId, KeyManagerConfiguration configuration)
             throws APIManagementException {
-        String GET_KEY_MAPPING_INFO_FROM_CLIENT_ID = "SELECT APP_INFO FROM AM_APPLICATION_KEY_MAPPING WHERE " +
-                "CONSUMER_KEY = ? and KEY_MANAGER = ?";
-        String GET_UUID_OF_KEY_MANAGER = "SELECT UUID FROM AM_KEY_MANAGER WHERE NAME = ?";
+
         try (Connection connection = APIMgtDBUtil.getConnection();
-             PreparedStatement preparedStatement = connection
-                     .prepareStatement(GET_KEY_MAPPING_INFO_FROM_CLIENT_ID)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(GET_KEY_MAPPING_INFO_FROM_CLIENT_ID)) {
             preparedStatement.setString(1, clientId);
             preparedStatement.setString(2, configuration.getName());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
+                if (resultSet.next()) {
                     try (InputStream appInfo = resultSet.getBinaryStream(ForgerockConstants.APP_UNFO)) {
                         if (appInfo != null) {
                             return (IOUtils.toString(appInfo));
                         }
                     } catch (IOException e) {
-                        log.error("Error while retrieving metadata", e);
+                        throw new APIManagementException("Error while retrieving metadata", e);
                     }
                 }
-                PreparedStatement getUUIDPreparedStatement = connection.prepareStatement(GET_UUID_OF_KEY_MANAGER);
-                getUUIDPreparedStatement.setString(1, configuration.getName());
-                try (ResultSet uuidSet = getUUIDPreparedStatement.executeQuery()) {
-                    while (uuidSet.next()) {
-                        String uuid = uuidSet.getString(ForgerockConstants.UUID);
-                        if (uuid != null) {
-                            preparedStatement.setString(2, uuid);
-                            ResultSet resultSetByUUID = preparedStatement.executeQuery();
-                            if (resultSetByUUID != null) {
-                                while (resultSetByUUID.next()) {
-                                    try (InputStream appInfo = resultSetByUUID.getBinaryStream(
-                                            ForgerockConstants.APP_UNFO)) {
-                                        if (appInfo != null) {
-                                            return (IOUtils.toString(appInfo));
-                                        }
-                                    } catch (IOException e) {
-                                        log.error("Error while retrieving metadata", e);
-                                    }
-                                }
-                            }
-                        } else {
-                            log.error("Error while retrieving UUID of Key Manager");
-                        }
-                    }
-                }
+                return getAppInfoFromKeyanerUUID(connection, configuration, clientId);
             }
         } catch (SQLException e) {
             throw new APIManagementException("Error while Retrieving Key Mappings ", e);
+        }
+    }
+
+    private String getAppInfoFromKeyanerUUID(Connection connection, KeyManagerConfiguration configuration,
+                                             String clientId) throws SQLException, APIManagementException {
+
+        try (PreparedStatement getAppInfoFromUUIDPreparedStatement = connection.prepareStatement(
+                GET_APPINFO_FROM_UUID_OF_KEY_MANAGER)) {
+            getAppInfoFromUUIDPreparedStatement.setString(1, clientId);
+            getAppInfoFromUUIDPreparedStatement.setString(2, configuration.getName());
+            getAppInfoFromUUIDPreparedStatement.setString(3, configuration.getTenantDomain());
+            try (ResultSet resultSet = getAppInfoFromUUIDPreparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    try (InputStream appInfo = resultSet.getBinaryStream(ForgerockConstants.APP_UNFO)) {
+                        if (appInfo != null) {
+                            return (IOUtils.toString(appInfo));
+                        }
+                    } catch (IOException e) {
+                        throw new APIManagementException("Error while retrieving metadata", e);
+                    }
+                }
+            }
         }
         return null;
     }
