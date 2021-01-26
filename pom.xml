@@ -174,9 +174,9 @@
         </snapshotRepository>
     </distributionManagement>
     <scm>
-        <connection>scm:git:https://github.com/wso2-extensions/apim-keymanager-forgerock.git</connection>
-        <url>https://github.com/wso2-extensions/apim-keymanager-forgerock.git</url>
-        <developerConnection>scm:git:https://github.com/wso2-extensions/apim-keymanager-forgerock.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2-extensions/apim-km-forgerock.git</connection>
+        <url>https://github.com/wso2-extensions/apim-km-forgerock.git</url>
+        <developerConnection>scm:git:https://github.com/wso2-extensions/apim-km-forgerock.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
