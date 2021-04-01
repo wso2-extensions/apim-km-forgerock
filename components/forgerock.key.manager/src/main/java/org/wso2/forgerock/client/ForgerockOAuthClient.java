@@ -210,10 +210,6 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         List<NameValuePair> parameters = new ArrayList<NameValuePair>();
         String grantType = ForgerockConstants.GRANT_TYPE_CLIENT_CREDENTIALS;
         parameters.add(new BasicNameValuePair(ForgerockConstants.GRANT_TYPE, grantType));
-        String scopeString = "dynamic_client_registration am-introspect-all-tokens";
-
-        parameters.add(new BasicNameValuePair(ForgerockConstants.ACCESS_TOKEN_SCOPE,
-                     scopeString));
 
         ForgeRockAccessTokenInfo accessTokenInfo = getAccessToken(clientId, clientSecret, parameters);
         if (accessTokenInfo != null) {
