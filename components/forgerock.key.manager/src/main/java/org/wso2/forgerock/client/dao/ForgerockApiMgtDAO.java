@@ -26,7 +26,7 @@ public class ForgerockApiMgtDAO {
             "WHERE CONSUMER_KEY = ? and KEY_MANAGER = ?";
     private static String GET_APPINFO_FROM_UUID_OF_KEY_MANAGER = "SELECT APP_INFO FROM AM_APPLICATION_KEY_MAPPING " +
             "WHERE CONSUMER_KEY = ? and KEY_MANAGER = (SELECT UUID FROM AM_KEY_MANAGER WHERE NAME = ? AND " +
-            "TENANT_DOMAIN = ?)";
+            "ORGANIZATION = ?)";
 
     /**
      * Method to get the instance of the ApiMgtDAO.
