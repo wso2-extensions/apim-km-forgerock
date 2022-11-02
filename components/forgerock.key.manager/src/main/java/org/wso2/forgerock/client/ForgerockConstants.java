@@ -42,8 +42,15 @@ public class ForgerockConstants {
     public static final String CLIENT_ACCESS_TOKEN_LIFETIME = "access_token_lifetime";
     public static final String CLIENT_REFRESH_TOKEN_LIFETIME = "refresh_token_lifetime";
     public static final String CLIENT_AUTH_CODE_LIFETIME = "authorization_code_lifetime";
+    public static final String CLIENT_TYPE = "client_type";
+    public static final String CLIENT_TYPE_LABEL = "Client Type";
+    public static final String CLIENT_TYPE_TOOLTIP = "Type of the client";
     public static final String CLIENT_RESPONSE_TYPES = "response_types";
+    public static final String CLIENT_TYPE_DEFAULT_VALUE = "Confidential";
     public static final String CLIENT_URI = "client_uri";
+    public static final String CLIENT_DEFAULT_SCOPE = "default_scopes";
+    public static final String INPUT_TYPE_SELECT = "select";
+    public static final String INPUT_TYPE_INPUT = "input";
     public static final String ACCESS_TOKEN_AUDIENCE = "aud";
     public static final String ACCESS_TOKEN_ISSUER = "iss";
     public static final String ACCESS_TOKEN_TYPE = "token_type";
@@ -52,6 +59,10 @@ public class ForgerockConstants {
     public static final String ACCESS_TOKEN_IDENTIFIER = "jti";
     public static final String FORGEROCK_DEFAULT_SCOPE = "defaultScope";
     public static final String DEFAULT_SCOPE = "default";
+    public static final String DEFAULT_SCOPE_LABEL = "Default Scope(s)";
+    public static final String DEFAULT_SCOPE_TOOLTIP = "Default Scopes of the client";
+    public static final String DEFAULT_VAlUE_EMPTY = "";
+    public static final String TRUE = "true";
     public static final String TOKEN_SCOPE = "tokenScope";
     public static final String TOKEN_GRANT_TYPE = "tokenGrantType";
     public static final String ERROR_ENCODING_METHOD_NOT_SUPPORTED = "Encoding method is not supported";
