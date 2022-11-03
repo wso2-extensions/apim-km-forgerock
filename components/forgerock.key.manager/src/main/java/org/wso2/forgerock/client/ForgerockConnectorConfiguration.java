@@ -90,7 +90,16 @@ public class ForgerockConnectorConfiguration implements KeyManagerConnectorConfi
                         "Token endpoint Authentication Method", "select", "How to Authenticate Token Endpoint",
                         "client_secret_basic", false, true, Arrays.asList("client_secret_basic", "client_secret_post",
                         "client_secret_jwt"), false));
-        return configurationDtoList;
+        configurationDtoList.add(
+                new ConfigurationDto(ForgerockConstants.CLIENT_TYPE, ForgerockConstants.CLIENT_TYPE_LABEL,
+                        ForgerockConstants.INPUT_TYPE_SELECT, ForgerockConstants.CLIENT_TYPE_TOOLTIP,
+                        ForgerockConstants.CLIENT_TYPE_DEFAULT_VALUE, false, false,
+                        Arrays.asList("Confidential", "Public"), false));
+        configurationDtoList.add(
+                new ConfigurationDto(ForgerockConstants.CLIENT_DEFAULT_SCOPE, ForgerockConstants.DEFAULT_SCOPE_LABEL,
+                        ForgerockConstants.INPUT_TYPE_INPUT, ForgerockConstants.DEFAULT_SCOPE_TOOLTIP,
+                        ForgerockConstants.DEFAULT_VAlUE_EMPTY, false, false, Arrays.asList("default"), true));
+        return configurationDtoList;     
     }
 
     @Override

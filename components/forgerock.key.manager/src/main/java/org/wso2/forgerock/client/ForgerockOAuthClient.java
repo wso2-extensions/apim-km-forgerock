@@ -457,9 +457,6 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
             applicationName = userNameForSp.concat(applicationName).concat("_").concat(keyType);
         }
 
-        List<String> defaultScopes = new ArrayList<>();
-        defaultScopes.add(ForgerockConstants.DEFAULT_SCOPE);
-        clientInfo.setDefaultScopes(defaultScopes);
         List<String> grantTypes = new ArrayList<>();
         if (oAuthApplicationInfo.getParameter(APIConstants.JSON_GRANT_TYPES) != null) {
             grantTypes =
@@ -552,6 +549,21 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
             } else {
                 clientInfo.setAuthCodeLifeTime(Long.parseLong((String)
                         additionalProperties.get(ForgerockConstants.CLIENT_AUTH_CODE_LIFETIME)));
+            }
+        }
+        if (additionalProperties.containsKey(ForgerockConstants.CLIENT_TYPE)) {
+            clientInfo.setClientType((String) additionalProperties.get(
+                    ForgerockConstants.CLIENT_TYPE));
+        }
+        Object defaultScopeTypes = additionalProperties.get(ForgerockConstants.CLIENT_DEFAULT_SCOPE);
+        
+        if (defaultScopeTypes != null) {
+            if (defaultScopeTypes instanceof List) {
+                clientInfo.setDefaultScopes((List) additionalProperties.get(ForgerockConstants.CLIENT_DEFAULT_SCOPE));
+            } else if (defaultScopeTypes instanceof String && ((String) defaultScopeTypes).isEmpty()) {
+                List<String> defaultScope = new ArrayList<>();
+                defaultScope.add(ForgerockConstants.DEFAULT_SCOPE);
+                clientInfo.setDefaultScopes(defaultScope);
             }
         }
         return clientInfo;
