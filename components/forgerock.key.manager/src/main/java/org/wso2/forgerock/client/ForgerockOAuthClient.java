@@ -133,9 +133,18 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
                         accessToken)).target(
                         ForgerockDCRClient.class, clientRegistrationEndpoint);
         ClientInfo clientInfoFromForgerock = forgeDCRClient.getApplication(clientId);
-        if (clientInfoFromForgerock != null &&
-                clientInfoFromForgerock.getApplicationType().equals(clientInfo.getApplicationType())) {
-            ClientInfo updatedClientInfo = forgeDCRClient.updateApplication(clientId, clientInfo);
+        if (clientInfoFromForgerock != null) {
+            clientInfoFromForgerock.setClientSecret(clientInfo.getClientSecret());
+            clientInfoFromForgerock.setClientSecretExpiredTime(clientInfo.getClientSecretExpiredTime());
+            clientInfoFromForgerock.setAccessTokenLifeTime(clientInfo.getAccessTokenLifeTime());
+            clientInfoFromForgerock.setRefreshTokenLifeTime(clientInfo.getRefreshTokenLifeTime());
+            clientInfoFromForgerock.setAuthCodeLifeTime(clientInfo.getAuthCodeLifeTime());
+            clientInfoFromForgerock.setRedirectUris(clientInfo.getRedirectUris());
+            clientInfoFromForgerock.setDefaultScopes(clientInfo.getDefaultScopes());
+            clientInfoFromForgerock.setResponseTypes(clientInfo.getResponseTypes());
+            clientInfoFromForgerock.setGrantTypes(clientInfo.getGrantTypes());
+            clientInfoFromForgerock.setTokenEndpointAuthMethod(clientInfo.getTokenEndpointAuthMethod());
+            ClientInfo updatedClientInfo = forgeDCRClient.updateApplication(clientId, clientInfoFromForgerock);
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Updating an OAuth client in Forgerock authorization server for the" +
                         " Consumer Key %s", clientId));
