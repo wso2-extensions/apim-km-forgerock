@@ -150,7 +150,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
                         " Consumer Key %s", clientId));
             }
             return createOAuthAppInfoFromResponse(updatedClientInfo);
-        }  else {
+        } else {
             throw new APIManagementException("Error occured while updating Oauth Client in Forgerock Authorization " +
                     "server due to read-only attribute change");
         }
@@ -769,16 +769,16 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
 
         Map<String, Set<Scope>> apiToScopeMapping = new HashMap<>();
         ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
-//        Map<String, Set<String>> apiToScopeKeyMapping = apiMgtDAO.getScopesForAPIS(apiIdsString);
-//        for (String apiId : apiToScopeKeyMapping.keySet()) {
-//            Set<Scope> apiScopes = new LinkedHashSet<>();
-//            Set<String> scopeKeys = apiToScopeKeyMapping.get(apiId);
-//            for (String scopeKey : scopeKeys) {
-//                Scope scope = getScopeByName(scopeKey);
-//                apiScopes.add(scope);
-//            }
-//            apiToScopeMapping.put(apiId, apiScopes);
-//        }
+        Map<String, Set<String>> apiToScopeKeyMapping = apiMgtDAO.getScopesForAPIS(apiIdsString);
+        for (String apiId : apiToScopeKeyMapping.keySet()) {
+            Set<Scope> apiScopes = new LinkedHashSet<>();
+            Set<String> scopeKeys = apiToScopeKeyMapping.get(apiId);
+            for (String scopeKey : scopeKeys) {
+                Scope scope = getScopeByName(scopeKey);
+                apiScopes.add(scope);
+            }
+            apiToScopeMapping.put(apiId, apiScopes);
+        }
         return apiToScopeMapping;
     }
 
