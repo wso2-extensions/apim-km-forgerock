@@ -20,7 +20,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.km.ext.forgerock</groupId>
     <artifactId>forgerock.auth.client</artifactId>
-    <version>1.1.6-SNAPSHOT</version>
+    <version>1.1.6</version>
     <packaging>pom</packaging>
     <parent>
         <groupId>org.wso2</groupId>
@@ -188,7 +188,7 @@
         <connection>scm:git:https://github.com/wso2-extensions/apim-km-forgerock.git</connection>
         <url>https://github.com/wso2-extensions/apim-km-forgerock.git</url>
         <developerConnection>scm:git:https://github.com/wso2-extensions/apim-km-forgerock.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v1.1.6</tag>
     </scm>
 
     <properties>
