@@ -144,6 +144,7 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
             clientInfoFromForgerock.setResponseTypes(clientInfo.getResponseTypes());
             clientInfoFromForgerock.setGrantTypes(clientInfo.getGrantTypes());
             clientInfoFromForgerock.setTokenEndpointAuthMethod(clientInfo.getTokenEndpointAuthMethod());
+            clientInfoFromForgerock.setClientType(clientInfo.getClientType());
             ClientInfo updatedClientInfo = forgeDCRClient.updateApplication(clientId, clientInfoFromForgerock);
             if (log.isDebugEnabled()) {
                 log.debug(String.format("Updating an OAuth client in Forgerock authorization server for the" +
