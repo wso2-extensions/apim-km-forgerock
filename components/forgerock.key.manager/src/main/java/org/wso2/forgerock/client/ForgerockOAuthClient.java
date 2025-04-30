@@ -509,6 +509,12 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         if (clientResponseTypes != null) {
             if(clientResponseTypes instanceof List) {
                 clientInfo.setResponseTypes((List) additionalProperties.get(ForgerockConstants.CLIENT_RESPONSE_TYPES));
+            } else if (clientResponseTypes instanceof String) {
+                String clientResponseStr = (String) clientResponseTypes;
+                if (clientResponseStr.startsWith("[") && clientResponseStr.endsWith("]")) {
+                    List<String> elementList = new Gson().fromJson(clientResponseStr, List.class);
+                    clientInfo.setResponseTypes(elementList);
+                }
             }
         }
         if (additionalProperties.containsKey(ForgerockConstants.CLIENT_TOKEN_ENDPOINT_AUTH_METHOD)) {
@@ -570,10 +576,14 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         if (defaultScopeTypes != null) {
             if (defaultScopeTypes instanceof List) {
                 clientInfo.setDefaultScopes((List) additionalProperties.get(ForgerockConstants.CLIENT_DEFAULT_SCOPE));
-            } else if (defaultScopeTypes instanceof String && ((String) defaultScopeTypes).isEmpty()) {
-                List<String> defaultScope = new ArrayList<>();
-                defaultScope.add(ForgerockConstants.DEFAULT_SCOPE);
-                clientInfo.setDefaultScopes(defaultScope);
+            } else if (defaultScopeTypes instanceof String) {
+                String defaultScopeStr = (String) defaultScopeTypes;
+                if (defaultScopeStr.isEmpty()) {
+                    clientInfo.setDefaultScopes(Collections.singletonList(ForgerockConstants.DEFAULT_SCOPE));
+                } else if (defaultScopeStr.startsWith("[") && defaultScopeStr.endsWith("]")) {
+                    List<String> elementList = new Gson().fromJson(defaultScopeStr, List.class);
+                    clientInfo.setDefaultScopes(elementList);
+                }
             }
         }
         return clientInfo;
