@@ -78,6 +78,10 @@ public class ForgerockConstants {
     public static final String DEFAULT_CALLBACK = "https://localhost:9443";
     public static final String KM_TYPE = "Forgerock";
     public static final String UUID = "UUID";
+    public static final String REFRESH_TOKEN_TYPE = "refresh_token";
+    public static final String TOKEN_NAME_CLAIM = "tokenName";
+    public static final int API_AUTH_INVALID_CREDENTIALS = 900901;
+
     ForgerockConstants() {
     }
 }

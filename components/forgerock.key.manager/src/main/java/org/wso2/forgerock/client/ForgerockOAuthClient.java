@@ -194,12 +194,17 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         String appInfo = apiMgtDAO.getAppInfoFromClientId(clientId, configuration);
         OAuthApplicationInfo oAuthApplicationInfo = new Gson().fromJson(appInfo, OAuthApplicationInfo.class);
         String accessToken = (String)oAuthApplicationInfo.getParameter(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
+        if (accessToken == null) {
+            accessToken = (String)new Gson().fromJson(appInfo, Map.class)
+                    .get(ForgerockConstants.REGISTRATION_ACCESS_TOKEN);
+        }
         ForgerockDCRClient forgeDCRClient =
                 Feign.builder().client(new OkHttpClient()).encoder(new GsonEncoder()).decoder(new GsonDecoder())
                         .logger(new Slf4jLogger()).requestInterceptor(new ForgerockAccessTokenInterceptor(
                                 accessToken)).target(
                                         ForgerockDCRClient.class, clientRegistrationEndpoint);
         ClientInfo retrievedClientInfo = forgeDCRClient.getApplication(clientId);
+        retrievedClientInfo.setRegistrationAccessToken(accessToken);
         return createOAuthAppInfoFromResponse(retrievedClientInfo);
     }
 
@@ -349,7 +354,13 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
         }
         AccessTokenInfo tokenInfo = new AccessTokenInfo();
         IntrospectInfo introspectInfo = introspectClient.introspect(accessToken);
-        tokenInfo.setTokenValid(introspectInfo.isActive());
+        boolean isActive = introspectInfo.isActive();
+        if (!isActive || ForgerockConstants.REFRESH_TOKEN_TYPE.equalsIgnoreCase(introspectInfo.getTokenType())) {
+            tokenInfo.setTokenValid(false);
+            tokenInfo.setErrorcode(APIConstants.KeyValidationStatus.API_AUTH_INVALID_CREDENTIALS);
+            return tokenInfo;
+        }
+        tokenInfo.setTokenValid(true);
 
         if (tokenInfo.isTokenValid()) {
 
@@ -776,21 +787,8 @@ public class ForgerockOAuthClient extends AbstractKeyManager {
 
     @Override
     public Map<String, Set<Scope>> getScopesForAPIS(String apiIdsString) throws APIManagementException {
-
-
-        Map<String, Set<Scope>> apiToScopeMapping = new HashMap<>();
-        ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
-        Map<String, Set<String>> apiToScopeKeyMapping = apiMgtDAO.getScopesForAPIS(apiIdsString);
-        for (String apiId : apiToScopeKeyMapping.keySet()) {
-            Set<Scope> apiScopes = new LinkedHashSet<>();
-            Set<String> scopeKeys = apiToScopeKeyMapping.get(apiId);
-            for (String scopeKey : scopeKeys) {
-                Scope scope = getScopeByName(scopeKey);
-                apiScopes.add(scope);
-            }
-            apiToScopeMapping.put(apiId, apiScopes);
-        }
-        return apiToScopeMapping;
+        // Zero usages, therefore not applicable
+        return null;
     }
 
     @Override

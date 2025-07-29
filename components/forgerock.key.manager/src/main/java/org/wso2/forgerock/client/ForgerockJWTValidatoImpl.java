@@ -19,7 +19,10 @@ package org.wso2.forgerock.client;
 
 import com.nimbusds.jwt.JWTClaimsSet;
 import org.wso2.carbon.apimgt.api.APIManagementException;
+import org.wso2.carbon.apimgt.common.gateway.dto.JWTValidationInfo;
+import org.wso2.carbon.apimgt.common.gateway.exception.JWTGeneratorException;
 import org.wso2.carbon.apimgt.impl.jwt.JWTValidatorImpl;
+import org.wso2.carbon.apimgt.impl.jwt.SignedJWTInfo;
 
 import java.util.List;
 
@@ -29,7 +32,7 @@ import java.util.List;
 public class ForgerockJWTValidatoImpl  extends JWTValidatorImpl {
 
     @Override
-    protected String getConsumerKey(JWTClaimsSet jwtClaimsSet) throws APIManagementException {
+    protected String getConsumerKey(JWTClaimsSet jwtClaimsSet) throws JWTGeneratorException {
         if (jwtClaimsSet != null) {
             if (jwtClaimsSet.getAudience() != null) {
                 List<String> audience = jwtClaimsSet.getAudience();
@@ -37,5 +40,18 @@ public class ForgerockJWTValidatoImpl  extends JWTValidatorImpl {
             }
         }
         return null;
+    }
+
+    @Override
+    public JWTValidationInfo validateToken(SignedJWTInfo signedJWTInfo) throws APIManagementException {
+
+        if (ForgerockConstants.REFRESH_TOKEN_TYPE.equals(signedJWTInfo.getJwtClaimsSet()
+                .getClaim(ForgerockConstants.TOKEN_NAME_CLAIM))) {
+            JWTValidationInfo jwtValidationInfo = new JWTValidationInfo();
+            jwtValidationInfo.setValidationCode(ForgerockConstants.API_AUTH_INVALID_CREDENTIALS);
+            jwtValidationInfo.setValid(false);
+            return jwtValidationInfo;
+        }
+        return super.validateToken(signedJWTInfo);
     }
 }
